@@ -3,19 +3,22 @@ import jwt from 'jsonwebtoken';
 
 import verifyJWT from './middlewares/verifyJWT';
 
+import authConfig from './config/auth';
+
 const routes = Router();
 
 routes.get('/users', verifyJWT, (request, response) => {
 
-  const users = [
-    { nome: 'Gabriel Silva' },
-    { nome: 'Kaio Silva' },
-    { nome: 'Rege Silva' },
-    { nome: 'Jean Carlos' },
-    { nome: 'Isabella Paes' }
-  ]
+  // exibe o id e nome do usuário logado
+  console.log(request.user)
 
-  console.log(request.id)
+  const users = [
+    { nome: 'Manon Woodcock' },
+    { nome: 'Arwel Roberson' },
+    { nome: 'Saanvi Dalby' },
+    { nome: 'Abid Hogan' },
+    { nome: 'Izzy Alcock' }
+  ]
 
   return response.json(users);
 });
@@ -28,8 +31,10 @@ routes.post('/auth', (request, response) => {
 
     const id = 1;
 
-    const token = jwt.sign({ id }, 'f2455e6df61f8a175c33f144dca0f7ad', {
-      expiresIn: 300
+    const { secret, expiresIn } = authConfig.jwt;
+
+    const token = jwt.sign({ id, user }, secret , {
+      expiresIn
     });
 
     return response.json({ auth: true, token});
